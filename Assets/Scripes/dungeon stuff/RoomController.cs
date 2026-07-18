@@ -27,10 +27,12 @@ public class RoomController : MonoBehaviour
     {
         if (!playerVisited)
         {
+            Debug.Log("Entered Room: " + roomGridPosition);
             playerVisited = true;
 
             ActivateEnemies();
         }
+         
 
         LockDoors();
     }

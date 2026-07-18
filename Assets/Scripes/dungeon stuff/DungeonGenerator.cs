@@ -143,6 +143,25 @@ int CountNeighbors(Vector2Int pos)
             roomObj.transform.position = worldPos;
             RoomController roomController =
                 roomObj.AddComponent<RoomController>();
+                            GameObject trigger = new GameObject("RoomTrigger");
+            trigger.transform.SetParent(roomObj.transform);
+            trigger.transform.localPosition = Vector3.zero;
+
+            BoxCollider box = trigger.AddComponent<BoxCollider>();
+            box.isTrigger = true;
+
+            // Covers the inside of the room
+            box.size = new Vector3(
+                roomSpacing - 5,
+                3f,
+                roomSpacing - 5);
+
+            box.center = new Vector3(
+                (roomSpacing - 5) * 0.5f,
+                1.5f,
+                (roomSpacing - 5) * 0.5f);
+
+            trigger.AddComponent<RoomTrigger>();
                 switch (template)
                 {
                         case var t when t == startRoom:
