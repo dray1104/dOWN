@@ -85,86 +85,90 @@ public class TileRoomBuilder : MonoBehaviour
                         break;
                     case TileType.DoorUp:
 
-                    if (hasUp)
-                    {
-                        Instantiate(
-                            tileSet.floorTile,
-                            pos,
-                            Quaternion.identity,
-                            transform);
-                    }
-                    else
-                    {
-                        Instantiate(
-                            tileSet.wallTile,
-                            pos,
-                            Quaternion.identity,
-                            transform);
-                    }
+    if (hasUp)
+    {
+        SpawnDoor(pos, DoorDirection.Up);
+    }
+    else
+    {
+        Instantiate(
+            tileSet.wallTile,
+            pos,
+            Quaternion.identity,
+            transform);
+    }
 
-                    break;
+    break;
                                 case TileType.DoorDown:
 
-                    if (hasDown)
-                    {
-                        Instantiate(
-                            tileSet.floorTile,
-                            pos,
-                            Quaternion.identity,
-                            transform);
-                    }
-                    else
-                    {
-                        Instantiate(
-                            tileSet.wallTile,
-                            pos,
-                            Quaternion.identity,
-                            transform);
-                    }
+    if (hasDown)
+    {
+        SpawnDoor(pos, DoorDirection.Down);
+    }
+    else
+    {
+        Instantiate(
+            tileSet.wallTile,
+            pos,
+            Quaternion.identity,
+            transform);
+    }
 
-                    break;
+    break;
                                     case TileType.DoorLeft:
 
-                    if (hasLeft)
-                    {
-                        Instantiate(
-                            tileSet.floorTile,
-                            pos,
-                            Quaternion.identity,
-                            transform);
-                    }
-                    else
-                    {
-                        Instantiate(
-                            tileSet.wallTile,
-                            pos,
-                            Quaternion.identity,
-                            transform);
-                    }
+    if (hasLeft)
+    {
+        SpawnDoor(pos, DoorDirection.Left);
+    }
+    else
+    {
+        Instantiate(
+            tileSet.wallTile,
+            pos,
+            Quaternion.identity,
+            transform);
+    }
 
-                    break;
+    break;
                                     case TileType.DoorRight:
 
-                    if (hasRight)
-                    {
-                        Instantiate(
-                            tileSet.floorTile,
-                            pos,
-                            Quaternion.identity,
-                            transform);
-                    }
-                    else
-                    {
-                        Instantiate(
-                            tileSet.wallTile,
-                            pos,
-                            Quaternion.identity,
-                            transform);
-                    }
+    if (hasRight)
+    {
+        SpawnDoor(pos, DoorDirection.Right);
+    }
+    else
+    {
+        Instantiate(
+            tileSet.wallTile,
+            pos,
+            Quaternion.identity,
+            transform);
+    }
 
-                    break;
+    break;
                 }
             }
         }
     }
+    private void SpawnDoor(Vector3 pos, DoorDirection direction)
+{
+    // Place the floor under the door
+    Instantiate(
+        tileSet.floorTile,
+        pos,
+        Quaternion.identity,
+        transform);
+
+    GameObject door = Instantiate(
+        tileSet.doorPrefab,
+        pos,
+        Quaternion.identity,
+        transform);
+
+    DoorController controller = door.GetComponent<DoorController>();
+
+    controller.direction = direction;
+    controller.currentRoom = GetComponent<RoomController>();
+}
 }
