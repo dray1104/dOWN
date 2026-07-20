@@ -24,8 +24,8 @@ public class DoorController : MonoBehaviour
             return;
 
         Vector3 spawnPos =
-            connectedDoor.transform.position +
-            connectedDoor.transform.forward * 2f;
+            connectedDoor.transform.position + new Vector3(0,1,0) +
+            connectedDoor.transform.forward * 3f;
 
         other.transform.position = spawnPos;
 
@@ -34,6 +34,18 @@ public class DoorController : MonoBehaviour
             Camera.main.transform.position.y,
             currentRoom.transform.position.z);
     }
+    public DoorController GetDoor(DoorDirection direction)
+{
+    DoorController[] doors = GetComponentsInChildren<DoorController>();
+
+    foreach (DoorController door in doors)
+    {
+        if (door.direction == direction)
+            return door;
+    }
+
+    return null;
+}
 
     public void LockDoor()
     {

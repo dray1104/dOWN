@@ -75,4 +75,18 @@ public class RoomController : MonoBehaviour
         if (leftDoor) leftDoor.UnlockDoor();
         if (rightDoor) rightDoor.UnlockDoor();
     }
+    public DoorController GetDoor(DoorDirection direction)
+    {
+        DoorController[] doors = GetComponentsInChildren<DoorController>();
+
+        foreach (DoorController door in doors)
+        {
+            if (door.direction == direction)
+            {
+                return door;
+            }
+        }
+
+        return null;
+    }
 }

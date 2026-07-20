@@ -18,7 +18,8 @@ public class DungeonGenerator : MonoBehaviour
 
     private Dictionary<Vector2Int, TileRoomTemplate> dungeonRooms =
         new Dictionary<Vector2Int, TileRoomTemplate>();
-
+    private Dictionary<Vector2Int, RoomController> roomControllers =
+    new Dictionary<Vector2Int, RoomController>();
     void Start()
     {
         GenerateDungeon();
@@ -182,6 +183,7 @@ int CountNeighbors(Vector2Int pos)
                 }
 
             roomController.roomGridPosition = gridPos;
+            roomControllers.Add(gridPos, roomController);
             TileRoomBuilder builder =
                 roomObj.AddComponent<TileRoomBuilder>();
 
@@ -206,5 +208,35 @@ int CountNeighbors(Vector2Int pos)
     hasLeft,
     hasRight);
         }
+        ConnectDoors();
     }
+    void ConnectDoors()
+{
+    LinkRoom(Vector2Int.right, DoorDirection.Right, DoorDirection.Left);
+    LinkRoom(Vector2Int.left, DoorDirection.Left, DoorDirection.Right);
+    LinkRoom(Vector2Int.up, DoorDirection.Up, DoorDirection.Down);
+    LinkRoom(Vector2Int.down, DoorDirection.Down, DoorDirection.Up);
+}
+
+void LinkRoom(Vector2Int offset,
+              DoorDirection myDoor,
+              DoorDirection otherDoor)
+{
+    foreach (var room in roomControllers)
+    {
+        Vector2Int neighborPos = room.Key + offset;
+
+        if (!roomControllers.TryGetValue(neighborPos, out RoomController neighbor))
+            continue;
+
+        DoorController doorA = room.Value.GetDoor(myDoor);
+        DoorController doorB = neighbor.GetDoor(otherDoor);
+
+        if (doorA == null || doorB == null)
+            continue;
+
+        doorA.connectedDoor = doorB;
+        doorB.connectedDoor = doorA;
+    }
+}
 }
