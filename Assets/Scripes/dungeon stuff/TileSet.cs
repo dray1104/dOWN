@@ -7,4 +7,5 @@ public class TileSet
     public GameObject wallTile;
     public GameObject obstacleTile;
     public GameObject enemyPrefab;
+    public GameObject doorPrefab;
 }
