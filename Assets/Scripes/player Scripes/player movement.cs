@@ -6,7 +6,6 @@ public class playermovement : MonoBehaviour
 {
 
     [Header("Player Movement Settings")]
-    public float speed = 5;
     public Rigidbody rb;
     public Vector3 input;
     [Header("Player dash Settings")]
@@ -16,12 +15,9 @@ public class playermovement : MonoBehaviour
     public int health = 4;
     public int maxhealth = 4;
     [Header("Player animation Settings")]
-    public Animator anim;
     private int walking;
     [Header("Player Audio Settings")]
-    
-    [Header("Player Camera Settings")]
-    public Camera gameCamera;
+    public Vector3 CameraOffset = new Vector3(0, 20, -10);
     [Header("Player UI Settings")]
     public GameObject pauseMenu;
     private pauseMenu pauseMenuScript;
@@ -36,27 +32,16 @@ public class playermovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        anim = GetComponent<Animator>();
         walking = Animator.StringToHash("walking");
         pauseMenuScript = pauseMenu.GetComponent<pauseMenu>();
 
-        if (gameCamera == null)
-        {
-            gameCamera = Camera.main;
-            if (gameCamera == null)
-            {
-                Debug.LogError("Main Camera not found! Ensure the camera has the 'MainCamera' tag.");
-            }
-        }
+        
     }
     void Update()
     {
         
-        
         lookAtMouse();
         Movement();
-        
-        
 
         if (health <= 0)
         {
@@ -69,19 +54,19 @@ public class playermovement : MonoBehaviour
         input.z = Input.GetAxisRaw("Vertical");
         input = new Vector3(input.x, 0f, input.z);
         input = input.normalized;
-         transform.Translate(input * speed * Time.deltaTime, Space.World);
-        if( input != Vector3.zero){
-            anim.SetInteger("walking", 1);
+         transform.Translate(input * Player.speed * Time.deltaTime, Space.World);
+        if( input != Vector3.zero && Player.State == "idle"){
+            Player.PlayerAnim.SetInteger("walking", 1);
             Debug.LogWarning("walking");
         }else{
-            anim.SetInteger("walking", 0);
+            Player.PlayerAnim.SetInteger("walking", 0);
             Debug.LogWarning("not walking");
         }
         
     }
      public void lookAtMouse()
     {
-        Ray cameraRay = gameCamera.ScreenPointToRay(Input.mousePosition);
+        Ray cameraRay = Player.PlayerCam.ScreenPointToRay(Input.mousePosition);
         Plane groundPlane = new Plane(Vector3.up, new Vector3(0, transform.position.y, 0));
         float rayLength;
 
@@ -103,6 +88,12 @@ public class playermovement : MonoBehaviour
             Debug.LogWarning("Ray did not hit the ground plane.");
         }
     }  
+    public void LateUpdate()
+    {
+        Vector3 cameraOffset = transform.position + CameraOffset; // Adjust the offset as needed
+        Vector3 smoothedPosition = Vector3.Lerp(Player.PlayerCam.transform.position, cameraOffset, 0.1f); // Adjust the smoothing factor as needed
+        Player.PlayerCam.transform.position = smoothedPosition;
+    }
    
 }
        
