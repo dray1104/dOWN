@@ -24,6 +24,7 @@ public class playermovement : MonoBehaviour
     public Vector3 CameraOffset = new Vector3(0, 0, -20);
     [Header("Player UI Settings")]
     public GameObject pauseMenu;
+    public GameObject ShootingArm;
     private pauseMenu pauseMenuScript;
     [Header("Player Ability1 Settings")]
     public bool abilityBeingUsed1 = false;
@@ -42,8 +43,11 @@ public class playermovement : MonoBehaviour
     }
     void Update()
     {
+       
+     lookAtMouse();
+
         
-        //lookAtMouse();
+      
         Movement();
         Rotate();
         Jump();
@@ -63,7 +67,7 @@ public class playermovement : MonoBehaviour
         {
             transform.rotation = Quaternion.Euler(0f, playerRotationRight, 0f);
         }
-    }
+   }
     void Jump()
     {
         if (Input.GetKeyDown(KeyCode.Space)&& isGrounded)
@@ -80,6 +84,7 @@ public class playermovement : MonoBehaviour
     void Movement()
     {
         input.x = Input.GetAxisRaw("Horizontal");
+        input.z = Input.GetAxisRaw("Vertical");
         input = new Vector3(input.x, 0f, input.z);
         input = input.normalized;
          transform.Translate(input * Player.speed * Time.deltaTime, Space.World);
@@ -94,27 +99,13 @@ public class playermovement : MonoBehaviour
     }
      public void lookAtMouse()
     {
-        Ray cameraRay = Player.PlayerCam.ScreenPointToRay(Input.mousePosition);
-        Plane groundPlane = new Plane(Vector3.up, new Vector3(0, transform.position.y, 0));
-        float rayLength;
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z = Mathf.Abs(Player.PlayerCam.transform.position.z - ShootingArm.transform.position.z);
+        mousePos = Player.PlayerCam.ScreenToWorldPoint(mousePos);
+        Vector2 direction = (mousePos - ShootingArm.transform.position);
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        ShootingArm.transform.rotation = Quaternion.Euler(0f,0f,angle - 90f);
 
-        if (groundPlane.Raycast(cameraRay, out rayLength))
-        {
-            Vector3 pointToLook = cameraRay.GetPoint(rayLength);
-            Vector3 direction = pointToLook - transform.position;
-
-            if (direction != Vector3.zero)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(-direction);
-                transform.rotation = targetRotation * Quaternion.Euler(0, 90, 0);
-            }
-
-            Debug.DrawLine(cameraRay.origin, pointToLook, Color.green);
-        }
-        else
-        {
-            Debug.LogWarning("Ray did not hit the ground plane.");
-        }
     }  
     public void LateUpdate()
     {

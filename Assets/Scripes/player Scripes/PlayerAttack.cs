@@ -10,5 +10,9 @@ public class PlayerAttack : MonoBehaviour
             Player.State = "attacking";
             Player.PlayerAnim.Play("Attack1");
         }
+        if (Input.GetButtonUp("Fire1"))
+        {
+            Player.State = "idle";
+        }
     }
 }
