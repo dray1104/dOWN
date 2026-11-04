@@ -14,6 +14,7 @@ public class playermovement : MonoBehaviour
     public float playerRotationRight = 35;
     public float playerRotationLeft = 145;
     public float jumpForce = 5;
+    public float jumpCutMultiplier = 0.5f;
     public bool isGrounded = true;
     public float dashspeed = 30f;
     public int health = 4;
@@ -73,11 +74,15 @@ public class playermovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space)&& isGrounded)
         {
 
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
             isGrounded = false; 
             Player.PlayerAnim.SetInteger("Jumping", 1);
             Player.State = "airborne";
 
+        }
+        if (Input.GetKeyUp(KeyCode.Space)&& rb.linearVelocity.y > 0)
+        {
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier, rb.linearVelocity.z);
         }
         
     }
