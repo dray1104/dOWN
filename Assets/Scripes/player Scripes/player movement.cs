@@ -71,7 +71,7 @@ public class playermovement : MonoBehaviour
    }
     void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space)&& isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space)&& isGrounded && !Input.GetKey(KeyCode.S))
         {
 
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
@@ -89,7 +89,7 @@ public class playermovement : MonoBehaviour
     void Movement()
     {
         input.x = Input.GetAxisRaw("Horizontal");
-        input.z = Input.GetAxisRaw("Vertical");
+        //input.z = Input.GetAxisRaw("Vertical");
         input = new Vector3(input.x, 0f, input.z);
         input = input.normalized;
          transform.Translate(input * Player.speed * Time.deltaTime, Space.World);

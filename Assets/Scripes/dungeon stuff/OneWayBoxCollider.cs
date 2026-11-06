@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+
 
 [RequireComponent(typeof(BoxCollider))]
 public class OneWayBoxCollider : MonoBehaviour
@@ -52,7 +54,18 @@ public class OneWayBoxCollider : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        TryIgnoreCollision(other);
+        if (other.CompareTag("player") && Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.Space))
+        {
+            Physics.IgnoreCollision(collider, other, true);
+           //StartCoroutine(EnableCollisionAfterDelay(1f, other));
+            
+
+        }else if (other.CompareTag("player"))
+        {
+            TryIgnoreCollision(other);
+        }
+        
+       
     }
 
     public void TryIgnoreCollision(Collider other)
@@ -97,15 +110,12 @@ public class OneWayBoxCollider : MonoBehaviour
         Gizmos.color = Color.green;
         Gizmos.DrawRay(transform.TransformPoint(collider.center), -PassthroughDirection * 2);
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+     private IEnumerator EnableCollisionAfterDelay(float delay,Collider other)
     {
-        
+        // Wait for 0.5 seconds
+        yield return new WaitForSeconds(delay); // Wait for 0.5 seconds before re-enabling collision
+        Physics.IgnoreCollision(collider, other, true);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
 }
